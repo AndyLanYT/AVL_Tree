@@ -12,7 +12,7 @@ struct tree {
 };
 
 
-void R_rotation(struct tree** node) {  // правий поворот
+void R_rotation(struct tree** node) {
     struct tree* temp = (*node)->left;
 
     (*node)->left = temp->right;
@@ -20,7 +20,7 @@ void R_rotation(struct tree** node) {  // правий поворот
     *node = temp;
 }
 
-void L_rotation(struct tree** node) {  // лівий поворот
+void L_rotation(struct tree** node) {
     struct tree* temp = (*node)->right;
 
     (*node)->right = temp->left;
@@ -28,28 +28,28 @@ void L_rotation(struct tree** node) {  // лівий поворот
     *node = temp;
 }
 
-void RL_rotation(struct tree** node) {  // право-лівий поворот
+void RL_rotation(struct tree** node) {
     R_rotation(&((*node)->right));
     L_rotation(node);
 }
 
-void LR_rotation(struct tree** node) {  // ліво-правий поворот
+void LR_rotation(struct tree** node) {
     L_rotation(&((*node)->left));
     R_rotation(node);
 }
 
-int height(struct tree* node) {  // висота дерева
+int height(struct tree* node) {
     if (!node) {
         return 0;
     }
     return max(height(node->left), height(node->right)) + 1;
 }
 
-int balance_factor(struct tree* node) {  // показник збалансованості
+int balance_factor(struct tree* node) {
     return height(node->left) - height(node->right);
 }
 
-void balance(struct tree** node) {  // балансування
+void balance(struct tree** node) {
     if (!*node) {
         return;
     }
@@ -70,30 +70,30 @@ void balance(struct tree** node) {  // балансування
     balance(&((*node)->right));
 }
 
-void insert(struct tree** root, int el) {  // додавання елементу
+void insert(struct tree** root, int el) {
     struct tree* temp = *root, *node;
 
-    node = (struct tree*) malloc(sizeof(struct tree));  // ініціалізація вершини, що буде додана
+    node = (struct tree*) malloc(sizeof(struct tree));
     node->element = el;
     node->left = NULL;
     node->right = NULL;
 
-    if (*root == NULL) {  // випадок, коли дерево порожнє
+    if (*root == NULL) {
         *root = node;
         balance(root);
-    } else {  // випадок, коли дерево не порожнє
-        while (temp) {  // спуск по дереву до потрібної позиції
+    } else {
+        while (temp) {
             if (el < temp->element) {
                 if (temp->left == NULL) {
-                    temp->left = node;  // вставка елементу
-                    balance(root);  // балансування
+                    temp->left = node;
+                    balance(root);
                     return;
                 }
                 temp = temp->left;
             } else if (el > temp->element) {
                 if (temp->right == NULL) {
-                    temp->right = node;  // вставка елементу
-                    balance(root);  // балансування
+                    temp->right = node;
+                    balance(root);
                     return;
                 }
                 temp = temp->right;
@@ -104,21 +104,21 @@ void insert(struct tree** root, int el) {  // додавання елемент�
     }
 }
 
-void delete_helper(struct tree** node, int el) {  // допоміжна функція видалення
+void delete_helper(struct tree** node, int el) {
     struct tree* temp = *node;
 
     if ((*node)->element == el) {
-        if ((*node)->left == NULL && (*node)->right == NULL) { // випадок, коли елемент, що видаляється, не має нащадків (листок)
+        if ((*node)->left == NULL && (*node)->right == NULL) {
             *node = NULL;
             free(temp);
-        } else if ((*node)->left == NULL) { // випадок, коли елемент, що видаляється, має лише правого нащадка
+        } else if ((*node)->left == NULL) {
             *node = (*node)->right;
             free(temp);
-        } else if ((*node)->right == NULL) {  // випадок, коли елемент, що видаляється, має лише лівого нащадка
+        } else if ((*node)->right == NULL) {
             *node = (*node)->left;
             free(temp);
-        } else {  // випадок, коли елемент, що видаляється, має двох нащадків
-            temp = temp->right;  // спуск до мінімального елемента правого піддерева
+        } else {
+            temp = temp->right;
             if (temp->left == NULL) {
                 temp->left = (*node)->left;
                 free(*node);
@@ -127,7 +127,7 @@ void delete_helper(struct tree** node, int el) {  // допоміжна функ
                 while (temp->left->left != NULL) {
                     temp = temp->left;
                 }
-                struct tree* memory = temp->left;  // перестановки та очищення пам'яті
+                struct tree* memory = temp->left;
                 temp->left = memory->right;
                 memory->left = (*node)->left;
                 memory->right = (*node)->right;
@@ -138,25 +138,25 @@ void delete_helper(struct tree** node, int el) {  // допоміжна функ
     }
 }
 
-void delete(struct tree** root, int el) {  // основна функція видалення
+void delete(struct tree** root, int el) {
     struct tree* node = *root;
 
-    if ((*root)->element == el) {  // випадок, коли елемент, що видаляється, - корінь
+    if ((*root)->element == el) {
         delete_helper(root, el);
         balance(root);
     } else {
-        while (node->element != el) {  // спуск по дереву до елемента, що видаляється
+        while (node->element != el) {
             if (el < node->element) {
                 if (node->left->element == el) {
-                    delete_helper(&(node->left), el);  // видалення елементу
-                    balance(root);  // балансування
+                    delete_helper(&(node->left), el);
+                    balance(root);
                     break;
                 }
                 node = node->left;
             } else if (el > node->element) {
                 if (node->right->element == el) {
-                    delete_helper(&(node->right), el);  // видалення елементу
-                    balance(root);  // балансування
+                    delete_helper(&(node->right), el);
+                    balance(root);
                     break;
                 }
                 node = node->right;
@@ -165,7 +165,7 @@ void delete(struct tree** root, int el) {  // основна функція ви
     }
 }
 
-void show_tree_helper(struct tree* root, int height) {  // допоміжна функція виведення дерева
+void show_tree_helper(struct tree* root, int height) {
     if (!root) {
         return;
     }
@@ -177,29 +177,6 @@ void show_tree_helper(struct tree* root, int height) {  // допоміжна ф
     show_tree_helper(root->right, height+1);
 }
 
-void show_tree(struct tree* root) {  // основна функція виведення дерева
+void show_tree(struct tree* root) {
     show_tree_helper(root, 0);
-}
-
-int main(void) {
-
-    struct tree* root = NULL;  // ініціалізація пустого дерева
-
-    insert(&root, 50);    // додавання елементів
-    insert(&root, 100);
-    insert(&root, 150);
-    insert(&root, 25);
-    insert(&root, 10);
-    insert(&root, 200);
-    insert(&root, 45);
-    show_tree(root);      // виведення дерева
-
-    delete(&root, 50);    // видалення елементів
-    delete(&root, 100);
-    delete(&root, 10);
-    delete(&root, 45);
-    show_tree(root);      // виведення дерева
-
-
-    return 0;
 }
