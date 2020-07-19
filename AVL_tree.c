@@ -127,39 +127,39 @@ void delete_helper(struct tree** node, int el) {
                 while (temp->left->left != NULL) {
                     temp = temp->left;
                 }
-                struct tree* memory = temp->left;
-                temp->left = memory->right;
-                memory->left = (*node)->left;
-                memory->right = (*node)->right;
+                struct tree* subtree = temp->left;
+                temp->left = subtree->right;
+                subtree->left = (*node)->left;
+                subtree->right = (*node)->right;
                 free(*node);
-                *node = memory;
+                *node = subtree;
             }
         }
     }
 }
 
 void delete(struct tree** root, int el) {
-    struct tree* node = *root;
+    struct tree* temp = *root;
 
     if ((*root)->element == el) {
         delete_helper(root, el);
         balance(root);
     } else {
-        while (node->element != el) {
-            if (el < node->element) {
-                if (node->left->element == el) {
-                    delete_helper(&(node->left), el);
+        while (temp->element != el) {
+            if (el < temp->element) {
+                if (temp->left->element == el) {
+                    delete_helper(&(temp->left), el);
                     balance(root);
                     break;
                 }
-                node = node->left;
-            } else if (el > node->element) {
-                if (node->right->element == el) {
-                    delete_helper(&(node->right), el);
+                temp = temp->left;
+            } else if (el > temp->element) {
+                if (temp->right->element == el) {
+                    delete_helper(&(temp->right), el);
                     balance(root);
                     break;
                 }
-                node = node->right;
+                temp = temp->right;
             }
         }
     }
