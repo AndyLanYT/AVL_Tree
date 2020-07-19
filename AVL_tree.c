@@ -150,14 +150,14 @@ void delete(struct tree** root, int el) {
                 if (temp->left->element == el) {
                     delete_helper(&(temp->left), el);
                     balance(root);
-                    break;
+                    return;
                 }
                 temp = temp->left;
             } else if (el > temp->element) {
                 if (temp->right->element == el) {
                     delete_helper(&(temp->right), el);
                     balance(root);
-                    break;
+                    return;
                 }
                 temp = temp->right;
             }
